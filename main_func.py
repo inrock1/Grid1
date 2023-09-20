@@ -8,7 +8,7 @@ def get_step_down(current_price: float, grid: list[float], current_line_ind: int
     while current_price <= grid[current_line_ind]:
         step += 1
         current_line_ind += 1
-    return step
+    return step, current_line_ind
 
 
 def simulate_strategy(dataframe):
@@ -38,19 +38,18 @@ def simulate_strategy(dataframe):
     current_line_ind = 0
     current_line = grid_down[current_line_ind]
 
-    # Итерируйтесь по историческим данным
+    # Итерация по историческим данным
     for index, row in dataframe.iterrows():
         current_price = row['close']
 
         # Проверка условия для размещения ордера на покупку
         if current_price <= grid_down[current_line_ind + 1]:
 
-            step = get_step_down(current_price, grid_down, current_line_ind)
-            current_line_ind += step
+            step, current_line_ind = get_step_down(current_price, grid_down, current_line_ind)
 
-            # Рассчитайте количество BTC, которое вы можете купить по фиксированной цене
+            # Рассчет количество BTC, которое можно купить по фиксированной цене
             btc_to_buy = fixed_price / current_price
-            # Рассчитайте комиссию за покупку
+            # Рассчет комиссии за покупку
             commission = btc_to_buy * commission_rate
             # Покупка BTC
             btc_balance += btc_to_buy - commission
