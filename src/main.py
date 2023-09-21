@@ -103,17 +103,18 @@ class TradingStrategy:
         self.open_sell_orders = []
         self.sell_price_percent = 1 + config.entry_intervals_up
         self.price_history = []
+        self.MA = config.MA
+        self.volatility_threshold = config.volatility_threshold
 
-    def should_start_trading(self, row):
-        x = 6  # count of last price for calculate standard deviation
-        if len(self.price_history) < x:
+    def should_start_trading(self):
+        MA = self.MA
+        if len(self.price_history) < MA:
             return False
 
         # standard deviation
-        std_dev = np.std(self.price_history[-x:])
-        volatility_threshold = 100
+        std_dev = np.std(self.price_history[-MA:])
 
-        if std_dev < volatility_threshold:
+        if std_dev < self.volatility_threshold:
             print("Start trading - Low volatility detected")
             return True
 
@@ -141,7 +142,7 @@ class TradingStrategy:
             self.price_history.append(current_price)
 
             # Check for new entry point
-            if not self.is_strategy_in_progress and self.should_start_trading(row):
+            if not self.is_strategy_in_progress and self.should_start_trading():
                 self.grid_down = self.calculate_grid(
                     row["close"], config.entry_intervals_down
                 )

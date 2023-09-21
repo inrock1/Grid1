@@ -12,3 +12,5 @@ class Config:
     ]
     entry_intervals_up = 0.04
     commission_rate = 0.001
+    volatility_threshold = 100
+    MA = 6  # count of last price for calculate standard deviation
