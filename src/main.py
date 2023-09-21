@@ -95,7 +95,6 @@ class TradingStrategy:
             config.entry_intervals_down
         )
         self.entry_intervals_down = config.entry_intervals_down
-        # self.entry_intervals_up = config.entry_intervals_up
         self.grid_down = self.calculate_grid(
             config.start_usdt_btc_price, config.entry_intervals_down
         )
@@ -103,21 +102,20 @@ class TradingStrategy:
         self.open_sell_orders = []
         self.sell_price_percent = 1 + config.entry_intervals_up
         self.price_history = []
-        self.MA = config.MA
+        self.count_for_std = config.count_for_std
         self.volatility_threshold = config.volatility_threshold
 
     def should_start_trading(self):
-        MA = self.MA
-        if len(self.price_history) < MA:
+        count_for_std = self.count_for_std
+        if len(self.price_history) < count_for_std:
             return False
 
         # standard deviation
-        std_dev = np.std(self.price_history[-MA:])
+        std_dev = np.std(self.price_history[-count_for_std:])
 
         if std_dev < self.volatility_threshold:
             print("Start trading - Low volatility detected")
             return True
-
         return False
 
     def add_result(self, results, timestamp, action, current_price, current_line_ind):
@@ -127,7 +125,7 @@ class TradingStrategy:
                 "action": action,
                 "current_price": current_price,
                 "btc_balance": self.portfolio.btc_balance,
-                "usdt_balance": self.portfolio.usdt_balance,
+                "usdt_balance": round(self.portfolio.usdt_balance, 2),
                 "current_line_ind": current_line_ind,
             }
         )
