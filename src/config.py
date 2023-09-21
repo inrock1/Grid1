@@ -1,8 +1,8 @@
 class Config:
     symbol = 'BTC/USDT'
     timeframe = '1h'  # Хронологический интервал одной свечи
-    limit = 24 * 30  # Количество свечей, для загрузки
-    start_date = '2023-02-01'
+    limit = 24 * 30 * 18  # Количество свечей, для загрузки
+    start_date = '2022-01-01'
     initial_usdt_balance = 15000  # USDT balance
     start_usdt_btc_price = 16000
     entry_intervals_down = [
